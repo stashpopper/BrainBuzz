@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // Use environment variable for API URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const useAuthStore = create((set) => ({
     // API base URL for all requests
@@ -12,10 +12,10 @@ const useAuthStore = create((set) => ({
     email: '',
     setEmail: (email) => set({ email: email }),
     password: '',
-    setPassword: (password) => set({ password: password }),
-    // Authentication state
+    setPassword: (password) => set({ password: password }),    // Authentication state
     token: null,
     isLoggedIn: false,
+    isInitialized: false,
     setIsLoggedIn: (status) => set({ isLoggedIn: status }),
     setToken: (token) => {
         if (token) {
@@ -24,14 +24,16 @@ const useAuthStore = create((set) => ({
             localStorage.removeItem('token');
         }
         set({ token, isLoggedIn: !!token });
-    },
-    setUserData: (data) => {
+    },    setUserData: (data) => {
         if (data) {
             localStorage.setItem('userData', JSON.stringify(data));
-            set({ name: data.name, isLoggedIn: true });
+            set({ 
+                name: data.name, 
+                user: { id: data.id, name: data.name, email: data.email },
+                isLoggedIn: true 
+            });
         }
-    },
-    initFromStorage: () => {
+    },    initFromStorage: () => {
         const token = localStorage.getItem('token');
         const userData = localStorage.getItem('userData');
         if (token && userData) {
@@ -39,14 +41,17 @@ const useAuthStore = create((set) => ({
             set({ 
                 token,
                 name: parsedUserData.name,
-                isLoggedIn: true
+                user: parsedUserData,
+                isLoggedIn: true,
+                isInitialized: true
             });
+        } else {
+            set({ isInitialized: true });
         }
-    },
-    logout: () => {
+    },logout: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('userData');
-        set({ token: null, isLoggedIn: false, name: '' });
+        set({ token: null, isLoggedIn: false, name: '', user: null });
     },
 
     inviteLink: '',
@@ -101,6 +106,9 @@ const useAuthStore = create((set) => ({
     updateQuizResults: (partialResults) => set((state) => ({
         quizResults: { ...state.quizResults, ...partialResults }
     })),
+
+    // User information
+    user: null,
 }));
 
 export default useAuthStore;

@@ -9,6 +9,9 @@ import QuizApp from './QuizLogic/Quiz';
 import ScorePage from './QuizLogic/ScorePage';
 import Quizlist from './pages/Quizlist';
 import MyQuizzes from './pages/MyQuizzes';
+import QuizRooms from './pages/QuizRooms';
+import QuizRoom from './pages/QuizRoom';
+import CreateQuizRoom from './components/CreateQuizRoom';
 import Logout from './components/Logout';
 
 const App = () => {
@@ -28,6 +31,9 @@ const App = () => {
                 <Route path="/score" element={<ScorePage />} />
                 <Route path="/quizlist" element={<Quizlist />} />
                 <Route path="/my-quizzes" element={<MyQuizzes />} />
+                <Route path="/quiz-rooms" element={<QuizRooms />} />
+                <Route path="/quiz-room/:roomCode" element={<QuizRoom />} />
+                <Route path="/create-quiz-room" element={<CreateQuizRoom />} />
                 <Route path="/Logout" element={<Logout />} />
             </Routes>
         </Router>

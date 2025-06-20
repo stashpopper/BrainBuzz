@@ -5,11 +5,10 @@ import useAuthStore from '../components/Store';
 import { Link } from 'react-router-dom';
 
 function Nav() {
-    const [state, setState] = useState(false);
-    const navigation = [
+    const [state, setState] = useState(false);    const navigation = [
         { title: "All Quizzes", path: "/quizlist" }, // Renamed for clarity
         { title: "My Quizzes", path: "/my-quizzes" }, // Updated link
-        
+        { title: "Quiz Rooms", path: "/quiz-rooms" }, // New quiz rooms link
     ]
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const navigate = useNavigate()

@@ -13,15 +13,17 @@ function Login () {
     const navigate = useNavigate();
     function handlesignupClick() {
         navigate('/signup');
-    }
-
-    const handleLogin = async () => {
+    }    const handleLogin = async () => {
         try {
             const response = await axios.post(`${apiUrl}/login`, { email, password });
 
             if (response.data.token) {
                 setToken(response.data.token);
-                setUserData({ name: response.data.name });
+                setUserData({ 
+                    name: response.data.name,
+                    id: response.data.id,
+                    email: response.data.email
+                });
                 navigate('/');  // Redirect after login
             }
         } catch (error) {
