@@ -16,7 +16,7 @@ const server = http.createServer(app);
 // Socket.IO setup
 const io = socketIo(server, {
   cors: {
-    origin: ['https://thebrainbuzz.netlify.app', 'http://localhost:3000', 'http://localhost:5173'],
+    origin: ['https://thebrainbuzz.netlify.app', 'http://localhost:3000', 'http://localhost:5173', 'https://brainbuzz-dram.onrender.com'],
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -26,7 +26,7 @@ app.use(express.json());
 
 // CORS configuration for both development and production
 app.use(cors({
-  origin: ['https://thebrainbuzz.netlify.app', 'http://localhost:3000', 'http://localhost:5173'],
+  origin: ['https://thebrainbuzz.netlify.app', 'http://localhost:3000', 'http://localhost:5173', 'https://brainbuzz-dram.onrender.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -869,16 +869,18 @@ io.on('connection', (socket) => {
 // Define port for the server
 const PORT = process.env.PORT || 5001;
 
-// Start the server only if not in a serverless environment
-if (process.env.NODE_ENV !== 'production') {
-    const serverInstance = server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start the server (always start for Render, only skip for Vercel)
+if (process.env.VERCEL !== '1') {
+    const serverInstance = server.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV}`);
+    });
     
     // Graceful shutdown
     process.on('SIGTERM', () => {
         console.log('SIGTERM received, shutting down gracefully');
         serverInstance.close(() => {
             console.log('Process terminated');
-            process.exit(0);
         });
     });
 
@@ -886,9 +888,10 @@ if (process.env.NODE_ENV !== 'production') {
         console.log('SIGINT received, shutting down gracefully');
         serverInstance.close(() => {
             console.log('Process terminated');
-            process.exit(0);
         });
     });
+} else {
+    console.log('Running in Vercel serverless environment');
 }
 
 // Export the app for serverless environments (Vercel)
