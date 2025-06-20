@@ -13,13 +13,12 @@ const MyQuizzes = () => {
   const setSelectedQuiz = useAuthStore((state) => state.setSelectedQuiz);
   const apiUrl = useAuthStore((state) => state.apiUrl);
   const token = useAuthStore((state) => state.token); // Get token from store
+  
   useEffect(() => {
     const fetchMyQuizzes = async () => {
       if (!token) {
         setError("You must be logged in to view your quizzes.");
         setLoading(false);
-        // Optionally redirect to login
-        // navigate('/login');
         return;
       }
 
@@ -32,20 +31,9 @@ const MyQuizzes = () => {
             Authorization: `Bearer ${token}`, // Include token in header
           },
         });
-          // Get stored quiz scores from local storage
-        const quizScores = JSON.parse(localStorage.getItem('quizScores') || '{}');
         
-        // Add lastScore property to each quiz
-        const quizzesWithScores = response.data.map(quiz => {
-          // Make sure to parse the score as a number
-          const lastScore = quizScores[quiz._id] ? parseFloat(quizScores[quiz._id]).toFixed(0) : undefined;
-          return {
-            ...quiz,
-            lastScore: lastScore // Add the last score if available
-          };
-        });
-        
-        setQuizzes(quizzesWithScores);
+        // No longer getting scores from localStorage
+        setQuizzes(response.data);
       } catch (err) {
         console.error("Error fetching user's quizzes:", err);
         if (err.response && err.response.status === 404) {
@@ -53,9 +41,6 @@ const MyQuizzes = () => {
           setQuizzes([]); // Ensure quizzes array is empty
         } else if (err.response && (err.response.status === 401 || err.response.status === 403)) {
           setError("Authentication failed. Please log in again.");
-          // Optionally clear token and redirect
-          // useAuthStore.getState().logout();
-          // navigate('/login');
         } else {
           setError("An error occurred while fetching your quizzes.");
         }
@@ -65,27 +50,12 @@ const MyQuizzes = () => {
     };
 
     fetchMyQuizzes();
-  }, [apiUrl, token, navigate]);  const handleTakeQuiz = (quiz) => {
-    // Get current scores from localStorage
-    try {
-      const quizScores = JSON.parse(localStorage.getItem('quizScores') || '{}');
-      const lastScore = quizScores[quiz._id];
-      
-      // Set up quiz in store
-      setSelectedQuiz({
-        ...quiz,
-        // Store the quiz ID to update lastScore after completion
-        _id: quiz._id,
-        lastScore: lastScore
-      });
-      
-      navigate(`/quiz/${quiz._id}`);
-    } catch (error) {
-      console.error('Error retrieving quiz scores:', error);
-      // Fall back to basic navigation if there's an error
-      setSelectedQuiz(quiz);
-      navigate(`/quiz/${quiz._id}`);
-    }
+  }, [apiUrl, token, navigate]);
+  
+  const handleTakeQuiz = (quiz) => {
+    // No longer getting scores from localStorage
+    setSelectedQuiz(quiz);
+    navigate(`/quiz/${quiz._id}`);
   };
 
   const handleDeleteQuiz = async (quizId) => {
@@ -121,7 +91,6 @@ const MyQuizzes = () => {
       setLoading(false);
     }
   };
-
 
   return (
     <>
@@ -194,22 +163,21 @@ const MyQuizzes = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>{quiz.questionCount || 'Multiple'} Questions</span>
-                    </div>                    <div className="mt-3 flex items-center gap-3 text-gray-800">
+                    </div>
+                    <div className="mt-3 flex items-center gap-3 text-gray-800">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>{quiz.timePerQuestion || '30'} seconds per question</span>
-                    </div>                    <div className="mt-3 flex items-center gap-3 text-gray-800">
+                    </div>
+                    <div className="mt-3 flex items-center gap-3 text-gray-800">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
                       <span>Difficulty: {quiz.difficulty || 'Medium'}</span>
-                    </div>                    <div className="mt-3 flex items-center gap-3 text-gray-800">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
-                      </svg>
-                      <span>{quiz.lastScore !== undefined ? `Last Score: ${quiz.lastScore}%` : 'Not attempted yet'}</span>
                     </div>
+                    
+                    {/* Removed score display section */}
                   </div>
 
                   <div className="flex-1 flex items-end gap-4">
@@ -219,11 +187,10 @@ const MyQuizzes = () => {
                     >
                       Take Quiz
                     </button>
-                    {/* Add Delete Button */}
                     <button
                       onClick={() => handleDeleteQuiz(quiz._id)}
                       className="mt-2 px-3 py-3 rounded-lg w-full font-semibold text-sm duration-150 text-white bg-red-600 hover:bg-red-500 active:bg-red-700"
-                      disabled={loading} // Disable button while loading
+                      disabled={loading}
                     >
                       Delete Quiz
                     </button>
@@ -233,10 +200,7 @@ const MyQuizzes = () => {
             </div>
           ) : (
             <div className="mt-16 text-center">
-              {/* Message updated for user's quizzes */}
               <p className="text-gray-500 text-lg">You haven't created any quizzes yet.</p>
-              {/* Optional: Add a button to create a quiz */}
-              {/* <button onClick={() => navigate('/Steps')} className="mt-4 px-4 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-500">Create Your First Quiz</button> */}
             </div>
           )}
         </div>

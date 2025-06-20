@@ -11,26 +11,15 @@ const Quizlist = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const setSelectedQuiz = useAuthStore((state) => state.setSelectedQuiz);
   const apiUrl = useAuthStore((state) => state.apiUrl);
+  
   useEffect(() => {
     const fetchQuizList = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`${apiUrl}/quiz`);
         
-        // Get stored quiz scores from local storage
-        const quizScores = JSON.parse(localStorage.getItem('quizScores') || '{}');
-        
-        // Add lastScore property to each quiz
-        const quizzesWithScores = response.data.map(quiz => {
-          // Make sure to parse the score as a number
-          const lastScore = quizScores[quiz._id] ? parseFloat(quizScores[quiz._id]).toFixed(0) : undefined;
-          return {
-            ...quiz,
-            lastScore: lastScore // Add the last score if available
-          };
-        });
-        
-        setQuizzes(quizzesWithScores);
+        // No longer getting quiz scores from localStorage
+        setQuizzes(response.data);
       } catch (error) {
         console.error("Error fetching quiz list:", error);
       } finally {
@@ -40,32 +29,20 @@ const Quizlist = () => {
 
     fetchQuizList();
   }, [apiUrl]);
+  
   const handleTakeQuiz = (quiz) => {
-    // Get current scores from localStorage
-    try {
-      const quizScores = JSON.parse(localStorage.getItem('quizScores') || '{}');
-      const lastScore = quizScores[quiz._id];
-      
-      // Store the selected quiz in the global state and navigate to quiz page
-      setSelectedQuiz({
-        ...quiz,
-        lastScore: lastScore
-      });
-      
-      navigate(`/quiz/${quiz._id}`);
-    } catch (error) {
-      console.error('Error retrieving quiz scores:', error);
-      // Fall back to basic navigation if there's an error
-      setSelectedQuiz(quiz);
-      navigate(`/quiz/${quiz._id}`);
-    }
+    // No longer getting scores from localStorage
+    // Just store the selected quiz in the global state and navigate to quiz page
+    setSelectedQuiz(quiz);
+    navigate(`/quiz/${quiz._id}`);
   };
 
   return (
     <>
       <Nav />
       <section className="py-14">
-        <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">          <div className="relative max-w-xl mx-auto sm:text-center">
+        <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">
+          <div className="relative max-w-xl mx-auto sm:text-center">
             <h3 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
               Available Quizzes
             </h3>
@@ -95,7 +72,9 @@ const Quizlist = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-          </div>          {loading ? (
+          </div>
+          
+          {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
             </div>
@@ -139,12 +118,7 @@ const Quizlist = () => {
                       <span>Difficulty: {quiz.difficulty || 'Medium'}</span>
                     </div>
                     
-                    <div className="mt-3 flex items-center gap-3 text-gray-800">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
-                      </svg>
-                      <span>{quiz.lastScore !== undefined ? `Last Score: ${quiz.lastScore}%` : 'Not attempted yet'}</span>
-                    </div>
+                    {/* Removed score display section */}
                   </div>
                   
                   <div className="flex-1 flex items-end">
