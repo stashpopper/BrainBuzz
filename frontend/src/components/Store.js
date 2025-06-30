@@ -12,7 +12,15 @@ const useAuthStore = create((set) => ({
     email: '',
     setEmail: (email) => set({ email: email }),
     password: '',
-    setPassword: (password) => set({ password: password }),    // Authentication state
+    confirmPassword: '',
+    setPassword: (password) => set({ password: password }),
+    setConfirmPassword: (password) => set({ confirmPassword: password }),
+    
+    // Authentication state
+    isLoading: false,
+    setIsLoading: (status) => set({ isLoading: status }),
+    authError: null,
+    setAuthError: (error) => set({ authError: error }),
     token: null,
     isLoggedIn: false,
     isInitialized: false,

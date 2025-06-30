@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../components/Store';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 function Login () { 
     const setEmail = useAuthStore((state) => state.setEmail);
@@ -10,10 +11,56 @@ function Login () {
     const password = useAuthStore((state) => state.password);
     const setToken = useAuthStore((state) => state.setToken);
     const setUserData = useAuthStore((state) => state.setUserData);
+    const setIsLoading = useAuthStore((state) => state.setIsLoading);
+    const isLoading = useAuthStore((state) => state.isLoading);
+    const setAuthError = useAuthStore((state) => state.setAuthError);
+    const authError = useAuthStore((state) => state.authError);
+    
     const navigate = useNavigate();
+    
+    // Local validation state
+    const [validationError, setValidationError] = useState(null);
+    
+    // Clear errors on unmount or when inputs change
+    useEffect(() => {
+        setAuthError(null);
+        setValidationError(null);
+    }, [email, password, setAuthError]);
+    
     function handlesignupClick() {
         navigate('/signup');
-    }    const handleLogin = async () => {
+    }
+    
+    const validateForm = () => {
+        // Email validation using regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setValidationError("Please enter a valid email address");
+            return false;
+        }
+        
+        // Password validation
+        if (password.length < 8) {
+            setValidationError("Password must be at least 8 characters long");
+            return false;
+        }
+        
+        return true;
+    };
+    
+    const handleLogin = async () => {
+        // Reset errors
+        setAuthError(null);
+        setValidationError(null);
+        
+        // Validate form
+        if (!validateForm()) {
+            return;
+        }
+        
+        // Set loading state
+        setIsLoading(true);
+        
         try {
             const response = await axios.post(`${apiUrl}/login`, { email, password });
 
@@ -28,6 +75,13 @@ function Login () {
             }
         } catch (error) {
             console.error("Login failed", error);
+            if (error.response && error.response.data && error.response.data.message) {
+                setAuthError(error.response.data.message);
+            } else {
+                setAuthError("Login failed. Please check your credentials and try again.");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
@@ -82,10 +136,28 @@ function Login () {
                         </div>
                         <a href="javascript:void(0)" className="text-center text-indigo-600 hover:text-indigo-500">Forgot password?</a>
                     </div>
+                    {/* Error message area */}
+                    {(validationError || authError) && (
+                        <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm">
+                            {validationError || authError}
+                        </div>
+                    )}
                     <button
-                        className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
-                    onClick={handleLogin}> 
-                        Sign in
+                        className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150 relative"
+                        onClick={handleLogin}
+                        disabled={isLoading}
+                    > 
+                        {isLoading ? (
+                            <>
+                                <span className="opacity-0">Sign in</span>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+                            </>
+                        ) : "Sign in"}
                     </button>
                 </form>
                
