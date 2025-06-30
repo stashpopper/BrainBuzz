@@ -32,6 +32,22 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+const url = 'https://brainbuzz-dram.onrender.com';
+const interval = 30000;
+
+function reloadWebsite() {
+  axios
+    .get(url)
+    .then((response) => {
+      console.log("website reloded");
+    })
+    .catch((error) => {
+      console.error('Error');
+    });
+}
+
+setInterval(reloadWebsite, interval);
+
 // AI Quiz Generation Configuration
 const API_KEY = "w9MCe67fIaMN4PT4koycxNt6ae50XVXG";
 const API_URL = "https://api.mistral.ai/v1/chat/completions";
