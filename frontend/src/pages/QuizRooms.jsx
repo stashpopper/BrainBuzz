@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '../components/Store';
 import Nav from '../components/Nav';
+import LoginPopup from '../components/LoginPopup';
 
 const QuizRooms = () => {
   const navigate = useNavigate();
   const token = useAuthStore((state) => state.token);
   const apiUrl = useAuthStore((state) => state.apiUrl);
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   
   const [joinCode, setJoinCode] = useState('');
   const [joinLoading, setJoinLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  
+  // Check for login on component mount
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setShowLoginPopup(true);
+    } else {
+      setShowLoginPopup(false);
+    }
+  }, [isLoggedIn]);
 
   const joinRoom = async (roomCode) => {
     if (!token) {
@@ -145,6 +157,11 @@ const QuizRooms = () => {
           </div>
         </div>
       </div>
+      
+      {/* Login Popup */}
+      {showLoginPopup && (
+        <LoginPopup onClose={() => setShowLoginPopup(false)} />
+      )}
     </>
   );
 };

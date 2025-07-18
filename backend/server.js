@@ -33,7 +33,7 @@ app.use(cors({
 }));
 
 const url = 'https://brainbuzz-dram.onrender.com';
-const interval = 30000;
+const interval = 300000;
 
 function reloadWebsite() {
   axios

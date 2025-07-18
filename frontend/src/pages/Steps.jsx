@@ -1,13 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import Input from "../components/Input";
 import Difficulty from "../components/Difficulty";
 import QuizConfigurator from "../components/Customize";
 import Review from "../components/Review";
 import useAuthStore from "../components/Store";
+import LoginPopup from "../components/LoginPopup";
 
 function Steps() {
     const steps = useAuthStore((state) => state);
+    const navigate = useNavigate();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
+    
+    // Check for login on component mount
+    useEffect(() => {
+        if (!isLoggedIn) {
+            setShowLoginPopup(true);
+        } else {
+            setShowLoginPopup(false);
+        }
+    }, [isLoggedIn]);
 
     return (
         <>
@@ -40,6 +54,11 @@ function Steps() {
             {steps.stepsItems[steps.currentStep - 1] === "Difficulty" && <Difficulty />}
             {steps.stepsItems[steps.currentStep - 1] === "Customise" && <QuizConfigurator />}
             {steps.stepsItems[steps.currentStep - 1] === "Review" && <Review />}
+            
+            {/* Login Popup */}
+            {showLoginPopup && (
+                <LoginPopup onClose={() => navigate('/')} />
+            )}
         </>
     );
 }

@@ -1,42 +1,11 @@
-import { useState } from 'react';
-import { ClipboardDocumentIcon, LinkIcon } from '@heroicons/react/24/outline';
+import { LinkIcon } from '@heroicons/react/24/outline';
 import Next from './Next';
 import useAuthStore from '../components/Store'; // ✅ Import Zustand store
+import { useNavigate } from 'react-router-dom';
 
 const Review = () => {
-    const { optionsCount, setOptionsCount, questionCount, setQuestionCount, timePerQuestion, setTimePerQuestion, inviteLink, setInviteLink } = useAuthStore(); // ✅ Import state and setters from Zustand store
-    
-    const [copied, setCopied] = useState(false);
-
-    const optionButtons = [
-        { value: 2, label: "2 Options" },
-        { value: 3, label: "3 Options" },
-        { value: 4, label: "4 Options" },
-    ];
-
-    
-
-    const copyToClipboard = async () => {
-        try {
-            await navigator.clipboard.writeText(inviteLink);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error('Failed to copy:', err);
-        }
-    };
-
-    const invitecode = async () => {
-        try {
-            const response = await fetch('https://brain-buzz-nu.vercel.app/invitecode'); // ✅ Use the correct URL
-            const data = await response.json();
-            setInviteLink(data.inviteCode);
-        } catch (error) {
-            console.error('Error fetching invite code:', error);
-        }
-
-
-    }
+    const { questionCount, timePerQuestion, optionsCount } = useAuthStore(); // ✅ Import state from Zustand store
+    const navigate = useNavigate();
     return (
         <div className="max-w-md mx-auto px-4 space-y-8 py-12">
             
@@ -82,41 +51,27 @@ const Review = () => {
     </div>
 
 
-                {/* Invite Section */}
+                {/* Note about multiplayer */}
                 <div className="p-4 bg-white border rounded-lg shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
                         <LinkIcon className="w-5 h-5 text-gray-600" />
-                        <h3 className="text-gray-800 font-medium">Share Quiz</h3>
+                        <h3 className="text-gray-800 font-medium">Multiplayer Quiz</h3>
                     </div>
                     
-                    {inviteLink ? 
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={inviteLink} // ✅ Display inviteLink value in the input field
-                                readOnly
-                                className="w-full px-3 py-2 border rounded-lg text-sm text-gray-600 truncate"
-                            />
-                            <button
-                                onClick={copyToClipboard}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo700 transition-colors text-sm flex items-center gap-2"
+                    <div className="text-gray-600 text-sm">
+                        <p>Want to play with others? Use the Quiz Rooms feature!</p>
+                        <div className="mt-4">
+                            <button 
+                                onClick={() => navigate('/quiz-rooms')} 
+                                className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
                             >
-                                <ClipboardDocumentIcon className="w-4 h-4" />
-                                {copied ? 'Copied!' : 'Copy'}
+                                Go to Quiz Rooms
                             </button>
                         </div>
-                    : (
-                        <button
-
-                            onClick={invitecode}
-                            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
-                        >
-                            Generate Invite Code
-                        </button>
-                    )}
+                    </div>
                     
                     <p className="mt-3 text-xs text-gray-500">
-                        Share this code with participants to allow them to take the quiz
+                        Create multiplayer quiz rooms and invite friends with a room code
                     </p>
                 </div>
                 <Next/>

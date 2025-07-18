@@ -1,12 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Features from "../components/Features";
 import Nav from "../components/Nav";
 import useAuthStore from "../components/Store";
+import LoginPopup from "../components/LoginPopup";
 
 
 function Pages() {
     const navigate = useNavigate();
     const { setCurrentStep } = useAuthStore();
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
     return (
         <>
@@ -24,7 +28,14 @@ function Pages() {
                             BrainBuzz is a powerful platform that allows you to create quizzes, tests, and exams online. It's easy to use and perfect for teachers, trainers, and anyone else who needs to create online assessments.
                         </p>                        <div className="items-center sm:space-y-0 flex flex-wrap gap-4">
                             <button 
-                                onClick={() => { setCurrentStep(1); navigate("/Steps") }} 
+                                onClick={() => { 
+                                    if (isLoggedIn) {
+                                        setCurrentStep(1); 
+                                        navigate("/Steps");
+                                    } else {
+                                        setShowLoginPopup(true);
+                                    }
+                                }} 
                                 className="block py-2 px-4 text-center text-white font-medium bg-indigo-600 duration-150 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-lg hover:shadow-none"
                             >
                                 Create a quiz
@@ -39,7 +50,13 @@ function Pages() {
                                 </svg>
                             </button>                            <button 
                                 className="flex items-center justify-center gap-x-2 py-2 px-4 text-gray-700 hover:text-gray-500 font-medium duration-150 active:bg-gray-100 border rounded-lg md:inline-flex bg-indigo-100 hover:bg-indigo-200" 
-                                onClick={() => navigate('/quiz-rooms')}
+                                onClick={() => {
+                                    if (isLoggedIn) {
+                                        navigate('/quiz-rooms');
+                                    } else {
+                                        setShowLoginPopup(true);
+                                    }
+                                }}
                             >
                                 Join a Room
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,6 +76,11 @@ function Pages() {
             <section>
                 <Features />
             </section>
+            
+            {/* Login Popup */}
+            {showLoginPopup && (
+                <LoginPopup onClose={() => setShowLoginPopup(false)} />
+            )}
         </>
     );
 }
