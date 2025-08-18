@@ -26,7 +26,7 @@ app.use(express.json());
 
 // CORS configuration for both development and production
 app.use(cors({
-  origin: ['https://thebrainbuzz.netlify.app', 'http://localhost:3000', 'http://localhost:5173', 'https://brainbuzz-dram.onrender.com'],
+  origin: ['https://buzzingneurons.netlify.app', 'http://localhost:3000', 'http://localhost:5173', 'https://brainbuzz-dram.onrender.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
