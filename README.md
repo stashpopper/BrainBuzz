@@ -2,7 +2,7 @@
 
 **BrainBuzz** is an interactive quiz application designed to challenge and enhance your knowledge across various domains. Built with a modern tech stack, it offers a seamless and engaging user experience.
 
-🔗 **Live Demo**: [thebrainbuzz.netlify.app](https://thebrainbuzz.netlify.app)
+🔗 **Live Demo**: [thebrainbuzz.netlify.app](https://buzzingneurons.netlify.app/)
 
 ---
 
