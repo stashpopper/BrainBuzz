@@ -28,6 +28,8 @@ if (isProduction && process.env.CLOUDINARY_URL) {
 async function uploadToCloudinary(localFilePath, documentId) {
     const result = await cloudinary.uploader.upload(localFilePath, {
         resource_type: 'raw',
+        type: 'upload',
+        access_mode: 'public',
         folder: 'brainbuzz/uploads',
         public_id: documentId,
         use_filename: false,
