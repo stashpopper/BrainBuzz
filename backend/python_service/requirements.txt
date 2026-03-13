@@ -1,0 +1,11 @@
+fastapi==0.115.0
+uvicorn==0.30.6
+langchain==0.3.7
+langchain-community==0.3.7
+langchain-mistralai==0.2.3
+langchain-mongodb==0.2.0
+pymongo==4.9.1
+pypdf==5.1.0
+pydantic==2.9.2
+python-dotenv==1.0.1
+python-multipart==0.0.12

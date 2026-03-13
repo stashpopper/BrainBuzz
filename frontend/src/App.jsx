@@ -13,6 +13,7 @@ import QuizRooms from './pages/QuizRooms';
 import QuizRoom from './pages/QuizRoom';
 import CreateQuizRoom from './components/CreateQuizRoom';
 import Logout from './components/Logout';
+import DocumentMode from './pages/DocumentMode';
 
 const App = () => {
     const initFromStorage = useAuthStore(state => state.initFromStorage);
@@ -20,7 +21,7 @@ const App = () => {
     useEffect(() => {
         initFromStorage();
     }, [initFromStorage]);
-     return (
+    return (
         <Router>
             <Routes>
                 <Route path="/signup" element={<Form />} />                <Route path="/login" element={<Login />} />
@@ -34,6 +35,7 @@ const App = () => {
                 <Route path="/quiz-rooms" element={<QuizRooms />} />
                 <Route path="/quiz-room/:roomCode" element={<QuizRoom />} />
                 <Route path="/create-quiz-room" element={<CreateQuizRoom />} />
+                <Route path="/document-mode" element={<DocumentMode />} />
                 <Route path="/Logout" element={<Logout />} />
             </Routes>
         </Router>

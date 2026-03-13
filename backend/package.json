@@ -15,19 +15,31 @@
   ],
   "author": "",
   "license": "ISC",
-  "description": "Backend API for The Brain Buzz quiz application",  "dependencies": {
+  "description": "Backend API for The Brain Buzz quiz application",
+  "dependencies": {
+    "@langchain/community": "^1.1.16",
+    "@langchain/core": "^1.1.26",
+    "@langchain/mistralai": "^1.0.4",
+    "@langchain/mongodb": "^1.1.0",
+    "@langchain/textsplitters": "^1.0.1",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.9.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
+    "langchain": "^1.2.25",
+    "mammoth": "^1.11.0",
     "mongoose": "^8.8.4",
+    "multer": "^2.0.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "socket.io": "^4.7.5"
+    "pdf-parse": "^1.1.1",
+    "socket.io": "^4.7.5",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

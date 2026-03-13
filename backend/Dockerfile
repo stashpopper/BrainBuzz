@@ -6,16 +6,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm ci --only=production --legacy-peer-deps
 
 # Copy app source code
 COPY . .
 
-# Expose port that the app runs on
-EXPOSE 5000
+# Ensure uploads directory exists (temp PDF storage before Cloudinary upload)
+RUN mkdir -p /app/uploads
 
-# Set environment variables
-ENV NODE_ENV=production
+# Expose port
+EXPOSE 5001
 
-# Start the application
-CMD ["npm", "run", "prod"]
+# Start the application (NODE_ENV is injected via docker-compose/Render env vars)
+CMD ["node", "server.js"]
