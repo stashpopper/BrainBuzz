@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../components/Store';
 import axios from 'axios';
+import React from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
-function Login () { 
+function Login () {
     const setEmail = useAuthStore((state) => state.setEmail);
     const setPassword = useAuthStore((state) => state.setPassword);
     const apiUrl = useAuthStore((state) => state.apiUrl);
@@ -11,9 +13,27 @@ function Login () {
     const setToken = useAuthStore((state) => state.setToken);
     const setUserData = useAuthStore((state) => state.setUserData);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [error, setError] = React.useState('');
     function handlesignupClick() {
         navigate('/signup');
     }    const handleLogin = async () => {
+        setError('');
+        setIsLoading(true);
+        
+        // Validate inputs
+        if (!email || !password) {
+            setError('Please enter both email and password');
+            setIsLoading(false);
+            return;
+        }
+        
+        if (!email.includes('@') || !email.includes('.')) {
+            setError('Please enter a valid email address');
+            setIsLoading(false);
+            return;
+        }
+        
         try {
             const response = await axios.post(`${apiUrl}/login`, { email, password });
 
@@ -28,6 +48,19 @@ function Login () {
             }
         } catch (error) {
             console.error("Login failed", error);
+            if (error.response) {
+                if (error.response.status === 401) {
+                    setError('Invalid email or password');
+                } else if (error.response.status === 400) {
+                    setError(error.response.data.message || 'Invalid credentials');
+                } else {
+                    setError('Login failed. Please try again.');
+                }
+            } else {
+                setError('Network error. Please check your connection.');
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
@@ -54,7 +87,8 @@ function Login () {
                             type="email"
                             required
                             placeholder='Enter your email'
-                            onChange={(e) => setEmail(e.target.value)} // ✅ Set email in Zustand store
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                         />
                     </div>
@@ -66,7 +100,8 @@ function Login () {
                             type="password"
                             required
                             placeholder='Enter your password'
-                            onChange={(e) => setPassword(e.target.value)} // ✅ Set password in Zustand store
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                         />
                     </div>
@@ -83,12 +118,19 @@ function Login () {
                         <a href="javascript:void(0)" className="text-center text-indigo-600 hover:text-indigo-500">Forgot password?</a>
                     </div>
                     <button
-                        className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
+                        disabled={isLoading}
+                        className={`w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     onClick={handleLogin}> 
-                        Sign in
+                        {isLoading ? <LoadingSpinner size="sm" text="Signing in..." /> : 'Sign in'}
                     </button>
+                    
+                    {error && (
+                        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                            {error}
+                        </div>
+                    )}
                 </form>
-               
+                
                 <p className="text-center">Don't have an account? <a href="javascript:void(0)" className="font-medium text-indigo-600 hover:text-indigo-500" onClick={handlesignupClick}>Sign up</a></p>
             </div>
         </main>

@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../components/Store';
 import axios from 'axios';
+import React from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
 function Form() {
     const setName = useAuthStore((state) => state.setName);
@@ -13,30 +15,74 @@ function Form() {
     const password = useAuthStore((state) => state.password);
     const apiUrl = useAuthStore((state) => state.apiUrl);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [error, setError] = React.useState('');
 
     const handleLoginClick = () => {
         navigate('/login');
     };
     const handlesignup = async (e) => {
         e.preventDefault();
+        setError('');
+        
+        // Validate inputs
+        if (!name || !email || !password) {
+            setError('Please fill in all fields');
+            return;
+        }
+        
+        if (name.length < 2) {
+            setError('Name must be at least 2 characters');
+            return;
+        }
+        
+        // Validate name contains only letters and optionally numbers, but not only numbers
+        const nameRegex = /^[a-zA-Z][a-zA-Z0-9]*$/;
+        if (!nameRegex.test(name)) {
+            setError('Name can only contain letters and numbers (must start with a letter)');
+            return;
+        }
+        
+        if (!email.includes('@') || !email.includes('.')) {
+            setError('Please enter a valid email address');
+            return;
+        }
+        
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters');
+            return;
+        }
+        
+        setIsLoading(true);
         try {
-       const response = await axios.post(`${apiUrl}/signup`, { // Use apiUrl from store
-            
-            name,
-            email,
-            password
-    })
-    if (response.data.token) {
-        setToken(response.data.token);
-        setUserData({ name });
-        navigate('/');
+            const response = await axios.post(`${apiUrl}/signup`, { 
+                name,
+                email,
+                password
+            });
+            if (response.data.token) {
+                setToken(response.data.token);
+                setUserData({ name });
+                navigate('/');
+            }
+        }
+        catch (error) {
+            console.error(error);
+            if (error.response) {
+                if (error.response.status === 400) {
+                    setError(error.response.data.message || 'Signup failed. Please try again.');
+                } else {
+                    setError('Signup failed. Please try again.');
+                }
+            } else if (error.request) {
+                setError('Network error. Please check your connection.');
+            } else {
+                setError('An error occurred. Please try again.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
-
-    }
-    catch (error) {
-        console.error(error);
-    }
-    }   
 
     return (
         <>
@@ -67,7 +113,8 @@ function Form() {
                                 type="text"
                                 required
                                 placeholder="Enter your name"
-                                onChange={(e) => setName(e.target.value)} // ✅ Set name in Zustand store
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                                 className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                             />
                         </div>
@@ -79,7 +126,8 @@ function Form() {
                                 type="email"
                                 required
                                 placeholder="Enter your email"
-                                onChange={(e) => setEmail(e.target.value)} // ✅ Set email in Zustand store
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                             />
                         </div>
@@ -91,15 +139,24 @@ function Form() {
                                 type="password"
                                 required
                                 placeholder="Enter your password"
-                                onChange={(e) => setPassword(e.target.value)} // ✅ Set password in Zustand store
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                             />
                         </div>
                         <button
-                            className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
+                            disabled={isLoading}
+                            type="submit"
+                            className={`w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
-                            Create account
+                            {isLoading ? <LoadingSpinner size="sm" text="Creating account..." /> : 'Create account'}
                         </button>
+                        
+                        {error && (
+                            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                                {error}
+                            </div>
+                        )}
                     </form>
                     
                 </div>
