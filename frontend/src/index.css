@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dark mode base styles */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  background-color: #030712; /* gray-950 */
+  color: #e5e7eb; /* gray-200 */
+}
+
+/* Smooth transition for dark mode toggle */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

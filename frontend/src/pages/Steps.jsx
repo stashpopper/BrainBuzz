@@ -12,8 +12,8 @@ function Steps() {
     return (
         <>
             <Nav />
-            <div className="max-w-2xl mx-auto px-4 md:px-0">
-                <ul aria-label="Steps" className="items-center text-gray-600 font-medium md:flex">
+            <div className="max-w-2xl mx-auto px-4 md:px-0 py-8">
+                <ul aria-label="Steps" className="items-center text-gray-600 dark:text-gray-400 font-medium md:flex">
                     {steps.stepsItems.map((item, idx) => (
                         <li key={idx} aria-current={steps.currentStep == idx + 1 ? "step" : false} className="flex gap-x-3 md:flex-col md:flex-1 md:gap-x-0">
                             <div className="flex flex-col items-center md:flex-row md:flex-1">

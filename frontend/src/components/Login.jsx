@@ -64,15 +64,15 @@ function Login () {
         }
     };
     return (
-        <main className="w-full h-screen flex flex-col items-center justify-center px-4">
-            <div className="max-w-sm w-full text-gray-600 space-y-5">
+        <main className="w-full h-screen flex flex-col items-center justify-center px-4 bg-white dark:bg-gray-950">
+            <div className="max-w-sm w-full text-gray-600 dark:text-gray-300 space-y-5">
                 <div className="text-center pb-8">                <div className="ml-2 flex justify-center">
                     <span className="text-4xl font-bold text-indigo-600">Brain</span>
                     <span className="text-4xl font-bold text-gray-700">Buzz</span>
                     <span className="ml-1 text-xs font-medium text-indigo-400 align-top">QUIZ</span>
                 </div>
                 <div className="mt-8">
-                    <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">Log in to your account</h3>
+                    <h3 className="text-gray-800 dark:text-white text-2xl font-bold sm:text-3xl">Log in to your account</h3>
                 </div>
                 </div>
                 <form
@@ -89,7 +89,7 @@ function Login () {
                             placeholder='Enter your email'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                            className="w-full mt-2 px-3 py-2 text-gray-500 dark:text-gray-300 bg-transparent outline-none border dark:border-gray-700 focus:border-indigo-600 shadow-sm rounded-lg"
                         />
                     </div>
                     <div>
@@ -102,7 +102,7 @@ function Login () {
                             placeholder='Enter your password'
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                            className="w-full mt-2 px-3 py-2 text-gray-500 dark:text-gray-300 bg-transparent outline-none border dark:border-gray-700 focus:border-indigo-600 shadow-sm rounded-lg"
                         />
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -125,7 +125,7 @@ function Login () {
                     </button>
                     
                     {error && (
-                        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                        <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-300 text-sm">
                             {error}
                         </div>
                     )}

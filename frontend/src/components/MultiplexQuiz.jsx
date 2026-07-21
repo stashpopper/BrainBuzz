@@ -74,9 +74,9 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Quiz Loading...</h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Quiz Loading...</h2>
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto"></div>
           </div>
         </div>
@@ -88,15 +88,15 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <div className="max-w-md mx-auto text-center p-8 bg-white rounded-xl shadow-lg">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
+          <div className="max-w-md mx-auto text-center p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
             <div className="text-green-600 mb-4">
               <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Quiz Completed!</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Quiz Completed!</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               Your answers have been submitted. Check the leaderboard to see how you performed!
             </p>
             <button
@@ -115,11 +115,11 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <h2 className="text-xl font-semibold text-gray-800">Quiz Loading...</h2>
-            <p className="text-gray-600 mt-2">Please wait while the quiz loads.</p>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Quiz Loading...</h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Please wait while the quiz loads.</p>
           </div>
         </div>
       </>
@@ -132,14 +132,14 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-gray-100 py-10">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 mb-6">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">Room: {roomCode}</h1>
-                <h2 className="text-lg text-gray-600">
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Room: {roomCode}</h1>
+                <h2 className="text-lg text-gray-600 dark:text-gray-400">
                   Question {currentQuestionIndex + 1} of {quizData.questions.length}
                 </h2>
               </div>
@@ -147,12 +147,12 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
                 <div className={`text-3xl font-bold ${remainingTime <= 10 ? 'text-red-600' : 'text-indigo-600'}`}>
                   {remainingTime}s
                 </div>
-                <div className="text-sm text-gray-600">Time Left</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Time Left</div>
               </div>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-6">
               <div
                 className="bg-indigo-600 h-3 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -161,7 +161,7 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
 
             {/* Question */}
             <div className="mb-8">
-              <h3 className="text-xl font-semibold text-gray-800 mb-6">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
                 {currentQuestion.question}
               </h3>
 
@@ -173,15 +173,15 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
                     onClick={() => handleOptionSelect(option)}
                     className={`w-full p-4 text-left border-2 rounded-lg transition-all duration-200 ${
                       selectedAnswers[currentQuestionIndex] === option
-                        ? 'border-indigo-600 bg-indigo-50 text-indigo-800'
-                        : 'border-gray-300 bg-white hover:border-indigo-400 hover:bg-indigo-50'
+                        ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-200'
+                        : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700'
                     }`}
                   >
                     <div className="flex items-center">
-                      <span className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3 text-sm font-medium">
+                      <span className="flex-shrink-0 w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mr-3 text-sm font-medium dark:text-gray-200">
                         {String.fromCharCode(65 + index)}
                       </span>
-                      <span className="text-gray-800">{option}</span>
+                      <span className="text-gray-800 dark:text-gray-200">{option}</span>
                     </div>
                   </button>
                 ))}
@@ -190,7 +190,7 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
 
             {/* Next Button */}
             <div className="flex justify-between items-center">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {selectedAnswers[currentQuestionIndex] ? 'Answer selected' : 'Select an answer'}
               </div>
               <button
@@ -203,8 +203,8 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
           </div>
 
           {/* Question Navigation */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Question Progress</h4>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Question Progress</h4>
             <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
               {quizData.questions.map((_, index) => (
                 <div
@@ -213,8 +213,8 @@ const MultiplexQuiz = ({ quizData, roomCode, onComplete }) => {
                     index === currentQuestionIndex
                       ? 'bg-indigo-600 text-white'
                       : selectedAnswers[index]
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-200 text-gray-600'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                   }`}
                 >
                   {index + 1}

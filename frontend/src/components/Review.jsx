@@ -44,8 +44,8 @@ const Review = () => {
 
          {/* Review Section */}
 <div className="space-y-6">
-    <div className="p-6 bg-white border rounded-xl shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+    <div className="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-xl shadow-sm">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                 <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
@@ -54,19 +54,19 @@ const Review = () => {
         </h3>
         
         <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs font-medium text-gray-500 mb-1">Questions</p>
-                <p className="text-2xl font-semibold text-gray-800">{questionCount}</p>
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Questions</p>
+                <p className="text-2xl font-semibold text-gray-800 dark:text-white">{questionCount}</p>
             </div>
             
-            <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs font-medium text-gray-500 mb-1">Options per Question</p>
-                <p className="text-2xl font-semibold text-gray-800">{optionsCount}</p>
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Options per Question</p>
+                <p className="text-2xl font-semibold text-gray-800 dark:text-white">{optionsCount}</p>
             </div>
             
-            <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs font-medium text-gray-500 mb-1">Time per Question</p>
-                <p className="text-2xl font-semibold text-gray-800">{timePerQuestion}s</p>
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Time per Question</p>
+                <p className="text-2xl font-semibold text-gray-800 dark:text-white">{timePerQuestion}s</p>
             </div>
             
             <div className="p-4 bg-indigo-50 rounded-lg">
@@ -83,10 +83,10 @@ const Review = () => {
 
 
                 {/* Invite Section */}
-                <div className="p-4 bg-white border rounded-lg shadow-sm">
+                <div className="p-4 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-lg shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
-                        <LinkIcon className="w-5 h-5 text-gray-600" />
-                        <h3 className="text-gray-800 font-medium">Share Quiz</h3>
+                        <LinkIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                        <h3 className="text-gray-800 dark:text-white font-medium">Share Quiz</h3>
                     </div>
                     
                     {inviteLink ? 
@@ -95,7 +95,7 @@ const Review = () => {
                                 type="text"
                                 value={inviteLink} // ✅ Display inviteLink value in the input field
                                 readOnly
-                                className="w-full px-3 py-2 border rounded-lg text-sm text-gray-600 truncate"
+                                className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-300 truncate dark:bg-gray-800"
                             />
                             <button
                                 onClick={copyToClipboard}
@@ -115,7 +115,7 @@ const Review = () => {
                         </button>
                     )}
                     
-                    <p className="mt-3 text-xs text-gray-500">
+                    <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
                         Share this code with participants to allow them to take the quiz
                     </p>
                 </div>

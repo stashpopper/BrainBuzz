@@ -48,14 +48,14 @@ const QuizRooms = () => {
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-gray-100 py-10">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
         <div className="max-w-4xl mx-auto px-4">          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Join a Room</h1>
-            <p className="text-xl text-gray-600">Create your own quiz room or join one with a code</p>
+            <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">Join a Room</h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400">Create your own quiz room or join one with a code</p>
           </div>
 
           {error && (
-            <div className="mb-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg max-w-md mx-auto text-center">
+            <div className="mb-8 p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg max-w-md mx-auto text-center">
               {error}
             </div>
           )}
@@ -64,14 +64,14 @@ const QuizRooms = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             
             {/* Create Room Card */}
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
-              <div className="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+              <div className="bg-indigo-100 dark:bg-indigo-900/40 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Create New Room</h3>
-              <p className="text-gray-600 mb-6">Set up your own quiz room with custom questions and invite friends</p>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Create New Room</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">Set up your own quiz room with custom questions and invite friends</p>
               <button
                 onClick={() => navigate('/create-quiz-room')}
                 className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-lg"
@@ -81,14 +81,14 @@ const QuizRooms = () => {
             </div>
             
             {/* Join Room Card */}
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
-              <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+              <div className="bg-green-100 dark:bg-green-900/40 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Join with Code</h3>
-              <p className="text-gray-600 mb-6">Enter a room code to join an existing quiz room</p>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Join with Code</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">Enter a room code to join an existing quiz room</p>
               
               <form onSubmit={joinByCode} className="space-y-4">
                 <input
@@ -96,7 +96,7 @@ const QuizRooms = () => {
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                   placeholder="Enter 6-digit room code"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-center text-lg font-mono tracking-wider"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-center text-lg font-mono tracking-wider dark:bg-gray-800 dark:text-white"
                   maxLength={6}
                 />
                 <button
@@ -119,24 +119,24 @@ const QuizRooms = () => {
 
           {/* Info Section */}
           <div className="max-w-3xl mx-auto mt-16">
-            <div className="bg-blue-50 rounded-xl p-8 text-center">
-              <h4 className="text-xl font-semibold text-blue-800 mb-4">How it works</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-blue-700">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-8 text-center">
+              <h4 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-4">How it works</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-blue-700 dark:text-blue-300">
                 <div>
-                  <div className="bg-blue-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                    <span className="font-bold text-blue-800">1</span>
+                  <div className="bg-blue-200 dark:bg-blue-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                    <span className="font-bold text-blue-800 dark:text-blue-200">1</span>
                   </div>
                   <p className="font-medium">Create or join a room</p>
                 </div>
                 <div>
-                  <div className="bg-blue-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                    <span className="font-bold text-blue-800">2</span>
+                  <div className="bg-blue-200 dark:bg-blue-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                    <span className="font-bold text-blue-800 dark:text-blue-200">2</span>
                   </div>
                   <p className="font-medium">Wait for participants</p>
                 </div>
                 <div>
-                  <div className="bg-blue-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                    <span className="font-bold text-blue-800">3</span>
+                  <div className="bg-blue-200 dark:bg-blue-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                    <span className="font-bold text-blue-800 dark:text-blue-200">3</span>
                   </div>
                   <p className="font-medium">Start the quiz!</p>
                 </div>

@@ -295,11 +295,11 @@ const QuizRoom = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 py-10 flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <h2 className="text-xl font-semibold text-gray-800">Initializing...</h2>
-            <p className="text-gray-600 mt-2">Please wait while we verify your session.</p>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Initializing...</h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Please wait while we verify your session.</p>
           </div>
         </div>
       </>
@@ -311,11 +311,11 @@ const QuizRoom = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 py-10 flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <h2 className="text-xl font-semibold text-gray-800">Loading room...</h2>
-            <p className="text-gray-600 mt-2">Please wait while we load the quiz room.</p>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Loading room...</h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Please wait while we load the quiz room.</p>
             {!isConnected && (
               <p className="text-yellow-600 mt-2 text-sm">Connecting to server...</p>
             )}
@@ -330,11 +330,11 @@ const QuizRoom = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 py-10 flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center max-w-md">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center max-w-md">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Connection Error</h2>
-            <p className="text-gray-600 mb-6">{error}</p>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Connection Error</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
             <div className="space-y-3">
               <button                onClick={() => {
                   setError('');
@@ -378,17 +378,17 @@ const QuizRoom = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 py-10">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
           <div className="max-w-4xl mx-auto px-4">
-            <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
               <div className="text-center mb-8">
                 <div className="text-green-600 mb-4">
                   <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">Quiz Completed!</h2>
-                <p className="text-gray-600 mb-6">
+                <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">Quiz Completed!</h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Great job! Check out the leaderboard below to see how you performed.
                 </p>
               </div>
@@ -412,12 +412,12 @@ const QuizRoom = () => {
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-gray-100 py-10">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
         <div className="max-w-6xl mx-auto px-4">
           
           {/* Connection Status */}
           {!isConnected && (
-            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4 text-center">
+            <div className="bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-400 dark:border-yellow-700 text-yellow-700 dark:text-yellow-300 px-4 py-3 rounded mb-4 text-center">
               <span className="font-medium">Connection Issue:</span> Reconnecting to server...
             </div>
           )}
@@ -426,18 +426,18 @@ const QuizRoom = () => {
             
             {/* Room Info */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl shadow-lg p-8">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
                 <div className="text-center mb-8">
-                  <h1 className="text-3xl font-bold text-gray-800 mb-2">{room.roomName}</h1>
-                  <p className="text-gray-600 mb-4">Created by {room.creatorName}</p>
+                  <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">{room.roomName}</h1>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">Created by {room.creatorName}</p>
                   
                   <div className="flex items-center justify-center gap-4 mb-6">
-                    <div className="bg-indigo-100 px-4 py-2 rounded-lg">
-                      <span className="text-indigo-800 font-bold text-lg">{roomCode}</span>
+                    <div className="bg-indigo-100 dark:bg-indigo-900/40 px-4 py-2 rounded-lg">
+                      <span className="text-indigo-800 dark:text-indigo-300 font-bold text-lg">{roomCode}</span>
                     </div>
                     <button
                       onClick={copyRoomCode}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                      className="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
                     >
                       Copy Code
                     </button>
@@ -458,39 +458,39 @@ const QuizRoom = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-indigo-600">{room.questionCount}</div>
-                    <div className="text-sm text-gray-600">Questions</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Questions</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-indigo-600">{room.timePerQuestion}s</div>
-                    <div className="text-sm text-gray-600">Per Question</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Per Question</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-indigo-600">{room.difficulty}</div>
-                    <div className="text-sm text-gray-600">Difficulty</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Difficulty</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-indigo-600">{participants.length}/{room.maxParticipants}</div>
-                    <div className="text-sm text-gray-600">Participants</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Participants</div>
                   </div>
                 </div>
 
                 {/* Categories */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Categories</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">Categories</h3>
                   <div className="flex flex-wrap gap-2">
                     {room.categories.map((category, index) => (
-                      <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm">
+                      <span key={index} className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 rounded-full text-sm">
                         {category}
                       </span>
                     ))}
                   </div>
                 </div>                {/* Quiz Generation Overlay */}
                 {isGeneratingQuiz && (
-                  <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+                  <div className="mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
-                    <h4 className="text-lg font-semibold text-blue-800 mb-2">Generating Quiz</h4>
-                    <p className="text-blue-600">{generationMessage}</p>
-                    <p className="text-sm text-blue-500 mt-2">Please wait, this may take a moment...</p>
+                    <h4 className="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">Generating Quiz</h4>
+                    <p className="text-blue-600 dark:text-blue-400">{generationMessage}</p>
+                    <p className="text-sm text-blue-500 dark:text-blue-400 mt-2">Please wait, this may take a moment...</p>
                   </div>
                 )}                {/* Action Buttons */}
                 <div className="flex gap-4 justify-center">
@@ -513,7 +513,7 @@ const QuizRoom = () => {
                   
                   <button
                     onClick={() => navigate('/quiz-rooms')}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     Leave Room
                   </button>
@@ -533,15 +533,15 @@ const QuizRoom = () => {
 
             {/* Participants & Leaderboard */}
             <div className="space-y-6">              {/* Participants */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
                   Participants ({participants.length})
                 </h3>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {participants.map((participant, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <span className="text-gray-800 font-medium">{participant.username}</span>
+                        <span className="text-gray-800 dark:text-gray-200 font-medium">{participant.username}</span>
                         {participant.userId === user?.id && (
                           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">You</span>
                         )}
@@ -569,7 +569,7 @@ const QuizRoom = () => {
                 
                 {/* Show progress when quiz is active */}
                 {quizStarted && (
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-blue-800 font-medium">Quiz Progress:</span>
                       <span className="text-blue-600">
@@ -588,9 +588,9 @@ const QuizRoom = () => {
                 )}
               </div>              {/* Leaderboard */}
               {showLeaderboard && leaderboard.length > 0 && (
-                <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
                   <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">🏆 Quiz Results</h3>
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">🏆 Quiz Results</h3>
                     {participants.filter(p => p.isFinished).length === participants.length && participants.length > 1 && (
                       <p className="text-green-600 font-medium">🎉 Everyone has completed the quiz!</p>
                     )}

@@ -24,7 +24,7 @@ const Ava = () => {
           {initials}
         </Avatar.Fallback>
         <div>
-          <span className="text-gray-700 text-sm font-medium">
+          <span className="text-gray-700 dark:text-gray-200 text-sm font-medium">
             {name}
           </span>
           <button 

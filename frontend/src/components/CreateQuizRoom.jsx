@@ -94,16 +94,16 @@ const CreateQuizRoom = () => {
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-gray-100 py-10">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Quiz Room</h1>
-              <p className="text-gray-600">Set up a multiplayer quiz room for up to 100 participants</p>
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Create Quiz Room</h1>
+              <p className="text-gray-600 dark:text-gray-400">Set up a multiplayer quiz room for up to 100 participants</p>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
                 {error}
               </div>
             )}
@@ -111,7 +111,7 @@ const CreateQuizRoom = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Room Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Room Name *
                 </label>
                 <input
@@ -119,7 +119,7 @@ const CreateQuizRoom = () => {
                   name="roomName"
                   value={formData.roomName}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                   placeholder="Enter room name"
                   required
                 />
@@ -127,10 +127,10 @@ const CreateQuizRoom = () => {
 
               {/* Categories */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Categories * (Select at least one)
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto border border-gray-300 dark:border-gray-700 rounded-lg p-3 dark:bg-gray-800">
                   {availableCategories.map(category => (
                     <label key={category} className="flex items-center space-x-2 cursor-pointer">
                       <input
@@ -139,11 +139,11 @@ const CreateQuizRoom = () => {
                         onChange={() => handleCategoryChange(category)}
                         className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
-                      <span className="text-sm text-gray-700">{category}</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{category}</span>
                     </label>
                   ))}
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Selected: {formData.categories.join(', ')}
                 </p>
               </div>
@@ -151,14 +151,14 @@ const CreateQuizRoom = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Difficulty */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Difficulty
                   </label>
                   <select
                     name="difficulty"
                     value={formData.difficulty}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -168,7 +168,7 @@ const CreateQuizRoom = () => {
 
                 {/* Question Count */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Number of Questions
                   </label>
                   <input
@@ -178,13 +178,13 @@ const CreateQuizRoom = () => {
                     onChange={handleInputChange}
                     min="5"
                     max="50"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
                 {/* Options Count */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Options per Question
                   </label>
                   <input
@@ -194,13 +194,13 @@ const CreateQuizRoom = () => {
                     onChange={handleInputChange}
                     min="2"
                     max="6"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
                 {/* Time per Question */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Time per Question (seconds)
                   </label>
                   <input
@@ -210,13 +210,13 @@ const CreateQuizRoom = () => {
                     onChange={handleInputChange}
                     min="10"
                     max="120"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
                 {/* Max Participants */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Max Participants
                   </label>
                   <input
@@ -226,7 +226,7 @@ const CreateQuizRoom = () => {
                     onChange={handleInputChange}
                     min="2"
                     max="100"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"                  />
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"                  />
                 </div>
               </div>
 
@@ -234,7 +234,7 @@ const CreateQuizRoom = () => {
                 <button
                   type="button"
                   onClick={() => navigate('/quiz-rooms')}
-                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   disabled={loading}
                 >
                   Cancel

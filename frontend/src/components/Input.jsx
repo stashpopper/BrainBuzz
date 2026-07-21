@@ -32,14 +32,14 @@ const Input = () => {
   };
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="max-w-md px-4 mx-auto mt-12">
+    <form onSubmit={(e) => e.preventDefault()} className="max-w-md px-4 mx-auto mt-12 dark:text-gray-200">
       <div className="relative flex flex-wrap gap-2 mt-4">
         <input
           type="text"
           value={quizName}
           onChange={(e) => setQuizName(e.target.value)}
           placeholder="Enter Quiz Name (optional)"
-          className="flex-1 py-3 pl-4 pr-12 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+          className="flex-1 py-3 pl-4 pr-12 text-gray-500 dark:text-gray-300 border dark:border-gray-700 rounded-md outline-none bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:border-indigo-600"
         />
         <button
           type="button"
@@ -54,7 +54,7 @@ const Input = () => {
           onChange={(e) => setInputCategory(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Select Category"
-          className="flex-1 py-3 pl-4 pr-12 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+          className="flex-1 py-3 pl-4 pr-12 text-gray-500 dark:text-gray-300 border dark:border-gray-700 rounded-md outline-none bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:border-indigo-600"
         />
         <button
           type="button"

@@ -30,26 +30,26 @@ const Leaderboard = ({ leaderboard, isRealTime = true }) => {
 
   if (!leaderboard || leaderboard.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
           🏆 Leaderboard
         </h3>
         <div className="text-center py-8">
-          <div className="text-gray-400 mb-2">
+          <div className="text-gray-400 dark:text-gray-500 mb-2">
             <svg className="mx-auto h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
             </svg>
           </div>
-          <p className="text-gray-500 text-sm">No completed quizzes yet</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">No completed quizzes yet</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
           🏆 Leaderboard
         </h3>
         {isRealTime && (
@@ -65,7 +65,7 @@ const Leaderboard = ({ leaderboard, isRealTime = true }) => {
           <div
             key={participant.userId}
             className={`flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${
-              index < 3 ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200' : 'bg-gray-50'
+              index < 3 ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/30 dark:to-yellow-800/30 border border-yellow-200 dark:border-yellow-700' : 'bg-gray-50 dark:bg-gray-800'
             }`}
           >
             <div className="flex items-center flex-1">
@@ -77,7 +77,7 @@ const Leaderboard = ({ leaderboard, isRealTime = true }) => {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center">
-                  <span className="font-medium text-gray-800 truncate">
+                  <span className="font-medium text-gray-800 dark:text-gray-200 truncate">
                     {participant.username}
                   </span>
                   {participant.rank <= 3 && (
@@ -86,7 +86,7 @@ const Leaderboard = ({ leaderboard, isRealTime = true }) => {
                     </span>
                   )}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   {participant.correctAnswers}/{participant.totalQuestions} correct
                 </div>
               </div>
@@ -96,7 +96,7 @@ const Leaderboard = ({ leaderboard, isRealTime = true }) => {
               <div className={`text-lg font-bold ${getScoreColor(participant.score)}`}>
                 {participant.score}%
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
                 {formatTime(participant.timeTaken)}
               </div>
             </div>
@@ -106,31 +106,31 @@ const Leaderboard = ({ leaderboard, isRealTime = true }) => {
 
       {leaderboard.length === 0 && (
         <div className="text-center py-6">
-          <p className="text-gray-500">Waiting for participants to finish...</p>
+          <p className="text-gray-500 dark:text-gray-400">Waiting for participants to finish...</p>
         </div>
       )}
 
       {/* Stats Summary */}
       {leaderboard.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-gray-200">
+        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-lg font-bold text-indigo-600">
                 {leaderboard.length}
               </div>
-              <div className="text-xs text-gray-600">Finished</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Finished</div>
             </div>
             <div>
               <div className="text-lg font-bold text-green-600">
                 {Math.round(leaderboard.reduce((sum, p) => sum + p.score, 0) / leaderboard.length)}%
               </div>
-              <div className="text-xs text-gray-600">Avg Score</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Avg Score</div>
             </div>
             <div>
               <div className="text-lg font-bold text-yellow-600">
                 {leaderboard[0]?.score || 0}%
               </div>
-              <div className="text-xs text-gray-600">Top Score</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Top Score</div>
             </div>
           </div>
         </div>

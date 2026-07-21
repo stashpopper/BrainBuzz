@@ -52,11 +52,11 @@ const Features = () => {
     ]
 
     return (
-        <section className="py-14">
-            <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">
+        <section className="py-14 bg-white dark:bg-gray-950">
+            <div className="max-w-screen-xl mx-auto px-4 text-gray-600 dark:text-gray-300 md:px-8">
                 <div className="relative max-w-2xl mx-auto sm:text-center">
                     <div className="relative z-10">
-                        <h3 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
+                        <h3 className="text-gray-800 dark:text-white text-3xl font-semibold sm:text-4xl">
                             Enhance Your Knowledge with Our Features
                         </h3>
                         <p className="mt-3">
@@ -70,11 +70,11 @@ const Features = () => {
                     <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                         {
                             features.map((item, idx) => (
-                                <li key={idx} className="bg-white space-y-3 p-4 border rounded-lg">
+                                <li key={idx} className="bg-white dark:bg-gray-900 space-y-3 p-4 border dark:border-gray-800 rounded-lg">
                                     <div className="text-indigo-600 pb-3">
                                         {item.icon}
                                     </div>
-                                    <h4 className="text-lg text-gray-800 font-semibold">
+                                    <h4 className="text-lg text-gray-800 dark:text-white font-semibold">
                                         {item.title}
                                     </h4>
                                     <p>
