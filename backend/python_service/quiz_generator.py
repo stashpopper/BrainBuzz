@@ -222,6 +222,7 @@ def generate_quiz(
     questions_per_topic = max(3, (question_count * 3) // (len(topics) * 2) + 1)
 
     all_questions: list[dict] = []
+    failed_topics: list[str] = []
 
     for topic in topics:
         if len(all_questions) >= question_count:
@@ -230,13 +231,26 @@ def generate_quiz(
         remaining = question_count - len(all_questions)
         request_count = max(questions_per_topic, remaining + 1)
 
+        print(f"[quiz] Generating questions for topic: '{topic['title']}' (requesting {request_count})")
         questions = generate_questions_for_topic(
             document_id=document_id,
             topic=topic,
             questions_per_topic=request_count,
             options_count=options_count,
         )
+        if not questions:
+            failed_topics.append(topic["title"])
         all_questions.extend(questions)
+
+    if not all_questions:
+        raise ValueError(
+            f"Failed to generate any questions. "
+            f"All {len(topics)} topics failed: {failed_topics}. "
+            f"Check vector index configuration and Mistral API connectivity."
+        )
+
+    if failed_topics:
+        print(f"[quiz] Warning: {len(failed_topics)} topics produced no questions: {failed_topics}")
 
     # Trim to exact count
     final_questions = all_questions[:question_count]

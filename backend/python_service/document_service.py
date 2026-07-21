@@ -275,6 +275,8 @@ def get_chunks_for_document(document_id: str, limit: int = 0) -> list[dict]:
 def search_similar_chunks(query: str, document_id: str, k: int = 4) -> list[dict]:
     """
     Perform vector similarity search for a query within a specific document.
+    Falls back to evenly-sampled chunk retrieval if vector search fails
+    (e.g., index misconfiguration, dimension mismatch, or transient errors).
 
     Args:
         query: The search query text.
@@ -284,22 +286,56 @@ def search_similar_chunks(query: str, document_id: str, k: int = 4) -> list[dict
     Returns:
         List of chunk dicts with text and score.
     """
-    vector_store = _get_vector_store()
+    try:
+        vector_store = _get_vector_store()
 
-    results = vector_store.similarity_search_with_score(
-        query=query,
-        k=k,
-        pre_filter={"documentId": {"$eq": document_id}},
-    )
+        results = vector_store.similarity_search_with_score(
+            query=query,
+            k=k,
+            pre_filter={"documentId": {"$eq": document_id}},
+        )
+
+        chunks = [
+            {
+                "text": doc.page_content,
+                "score": score,
+                "chunkId": doc.metadata.get("chunkId", ""),
+                "page": doc.metadata.get("page"),
+            }
+            for doc, score in results
+        ]
+
+        if chunks:
+            return chunks
+
+        # Vector search returned empty — fall through to fallback
+        print(f"[search] Vector search returned 0 results for document {document_id}, using fallback")
+
+    except Exception as e:
+        print(f"[search] Vector search failed for document {document_id}: {e}")
+        print(f"[search] Falling back to sampled chunk retrieval")
+
+    # Fallback: retrieve chunks directly from MongoDB and sample evenly
+    all_chunks = get_chunks_for_document(document_id)
+    if not all_chunks:
+        return []
+
+    total = len(all_chunks)
+    if total <= k:
+        sampled = all_chunks
+    else:
+        step = max(1, total // k)
+        sampled = [all_chunks[i * step] for i in range(k) if i * step < total]
 
     return [
         {
-            "text": doc.page_content,
-            "score": score,
-            "chunkId": doc.metadata.get("chunkId", ""),
-            "page": doc.metadata.get("page"),
+            "text": c["text"],
+            "score": 0.0,
+            "chunkId": c.get("chunkId", ""),
+            "page": c.get("page"),
         }
-        for doc, score in results
+        for c in sampled
+        if c.get("text") and c["text"].strip()
     ]
 
 
