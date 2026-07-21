@@ -90,15 +90,21 @@ def extract_topics(document_id: str) -> list[dict]:
     llm = _get_llm(temperature=0.0)
     structured_llm = llm.with_structured_output(TopicList)
 
-    prompt = f"""You are analyzing a document to extract its main topics.
+    prompt = f"""You are an expert curriculum designer analyzing a document to extract its main topics for quiz generation.
 
 Below are representative excerpts from different parts of the document:
 
 {excerpts_text}
 
 Extract 3-6 globally important topics that this document covers.
-Each topic must be grounded in the excerpts above — do not invent topics.
-Topics should be specific enough to generate meaningful quiz questions.
+
+REQUIREMENTS:
+1. Each topic MUST be directly grounded in the excerpts above — do not invent topics
+2. Topics should be specific and concrete (e.g., "Load Balancing Algorithms" not just "Networking")
+3. Topics should be distinct from each other — avoid overlapping concepts
+4. Each topic should have enough depth to generate multiple meaningful quiz questions
+5. Prioritize topics that test understanding, not just memorization
+6. The description should clearly define the scope and key concepts of the topic
 """
 
     max_retries = 3
@@ -135,9 +141,18 @@ def generate_questions_for_topic(
     topic_title = topic["title"]
     topic_desc = topic["description"]
 
-    # Retrieve relevant chunks for this topic
-    search_query = f"{topic_title}: {topic_desc}"
-    relevant_chunks = search_similar_chunks(search_query, document_id, k=5)
+    # Retrieve relevant chunks for this topic using multiple queries for better coverage
+    primary_chunks = search_similar_chunks(topic_title, document_id, k=6)
+    secondary_chunks = search_similar_chunks(topic_desc, document_id, k=4)
+
+    # Deduplicate by text content, preserving order (primary first)
+    seen_texts = set()
+    relevant_chunks = []
+    for chunk in primary_chunks + secondary_chunks:
+        text_key = chunk.get("text", "")[:200]
+        if text_key and text_key not in seen_texts:
+            seen_texts.add(text_key)
+            relevant_chunks.append(chunk)
 
     # Filter out chunks with empty or very short text
     relevant_chunks = [
@@ -154,24 +169,27 @@ def generate_questions_for_topic(
     llm = _get_llm(temperature=0.3)
     structured_llm = llm.with_structured_output(QuestionSet)
 
-    prompt = f"""Generate exactly {questions_per_topic} multiple-choice quiz questions about the topic "{topic_title}".
+    prompt = f"""You are an expert assessment designer. Generate exactly {questions_per_topic} high-quality multiple-choice quiz questions about "{topic_title}".
 
 Each question must have exactly {options_count} answer options.
 
-CONTEXT (use ONLY this information):
+SOURCE CONTEXT (use ONLY this information):
 {context}
 
-REQUIREMENTS:
-1. Every question MUST be answerable from the context above
-2. Generate a mix of question types:
-   - Conceptual: tests understanding of definitions and concepts
-   - Analytical: requires reasoning about relationships or comparisons
-   - Application: applies concepts to scenarios
-3. The correct_answer must be exactly one of the options
-4. Options should be plausible — avoid obviously wrong distractors
-5. Do NOT generate generic textbook questions — ground everything in the specific content
-6. Do NOT hallucinate information not in the context
-7. Set the 'topic' field to "{topic_title}" for every question
+STRICT REQUIREMENTS:
+1. Every question MUST be directly answerable from the source context above
+2. Distribute questions across these cognitive levels:
+   - Remembering (20%): Recall specific facts, definitions, or terms from the context
+   - Understanding (30%): Explain concepts, interpret relationships, summarize ideas
+   - Applying (30%): Apply concepts to new scenarios or solve problems using context info
+   - Analyzing (20%): Compare/contrast elements, identify patterns, draw conclusions
+3. The correct_answer MUST be an EXACT string match to one of the options (character-for-character)
+4. All distractors MUST be plausible and related to the topic — never use joke answers or obviously wrong options
+5. Questions must be specific to THIS document's content, not generic knowledge
+6. Do NOT include information not present in the source context
+7. Avoid questions that are too easy or too ambiguous
+8. Set the 'topic' field to "{topic_title}" for every question
+9. Vary question stems: use "Which", "What", "How", "Why", "In the context of...", etc.
 """
 
     max_retries = 3

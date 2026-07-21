@@ -261,6 +261,8 @@ const QuizApp = () => {
           question: q.question,
           userAnswer: selectedAnswers[i] || "No answer",
           correctAnswer: q.correct_answer,
+          options: q.options || [],
+          originalIndex: i,
           isCorrect
         });
       });
@@ -285,9 +287,9 @@ const QuizApp = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-600"></div>
-          <p className="ml-3 text-lg text-indigo-600">
+          <p className="ml-3 text-lg text-indigo-600 dark:text-indigo-400">
             {showQuizConfig ? "Loading..." : "Generating your quiz..."}
           </p>
         </div>
@@ -299,24 +301,24 @@ const QuizApp = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 py-10">
-          <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
+          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6">Quiz Configuration</h2>
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Quiz Configuration</h2>
               <div className="mb-8 space-y-2">
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   <span className="font-semibold">Selected Categories:</span> {categories.join(", ") || "None"}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   <span className="font-semibold">Difficulty:</span> {difficulty}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   <span className="font-semibold">Options per Question:</span> {optionsCount}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   <span className="font-semibold">Total Questions:</span> {questionCount}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   <span className="font-semibold">Time per Question:</span> {timePerQuestion}s
                 </p>
               </div>
@@ -349,10 +351,10 @@ const QuizApp = () => {
     return (
       <>
         <Nav />
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <div className="max-w-md mx-auto text-center p-6 bg-white rounded-xl shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Quiz Not Found</h2>
-            <p className="text-gray-600 mb-6">The quiz you're looking for doesn't exist or has no questions.</p>
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
+          <div className="max-w-md mx-auto text-center p-6 bg-white dark:bg-gray-900 rounded-xl shadow-md">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Quiz Not Found</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">The quiz you're looking for doesn't exist or has no questions.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <button 
                 onClick={() => {
@@ -382,32 +384,32 @@ const QuizApp = () => {
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-gray-100 py-10">
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 py-10">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">{quiz.quizName || "Quiz"}</h1>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">{quiz.quizName || "Quiz"}</h1>
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-2xl font-semibold text-gray-800">
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">
                 Question {currentQuestionIndex + 1} of {quiz.questions.length}
               </h3>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
                 Time Remaining: <span className="font-semibold">{remainingTime}s</span>
               </div>
             </div>
-            {/* Add check for currentQuestion before accessing its properties */}
-            <p className="text-xl text-gray-800 mb-6">{currentQuestion?.question || 'Loading question...'}</p>
+            <p className="text-xl text-gray-800 dark:text-gray-200 mb-6">{currentQuestion?.question || 'Loading question...'}</p>
             <div className="grid gap-4">
-              {/* Add check to ensure options is an array before mapping */}
               {currentQuestion && Array.isArray(currentQuestion.options) ? currentQuestion.options.map((opt, i) => (
                 <button
                   key={i}
                   onClick={() => handleOptionSelect(opt)}
-                  className={`w-full px-4 py-3 border rounded-lg transition-colors 
-                    ${selectedAnswers[currentQuestionIndex] === opt ? "bg-indigo-200 border-indigo-600" : "bg-white hover:bg-gray-50"}`}
+                  className={`w-full px-4 py-3 border rounded-lg transition-colors text-left
+                    ${selectedAnswers[currentQuestionIndex] === opt
+                      ? "bg-indigo-200 dark:bg-indigo-800 border-indigo-600 dark:border-indigo-400 text-gray-900 dark:text-white"
+                      : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"}`}
                 >
                   {opt}
                 </button>
-              )) : <p>Loading options...</p>} 
+              )) : <p className="dark:text-gray-400">Loading options...</p>}
             </div>
           </div>
           <div className="flex justify-end mb-6">
@@ -419,13 +421,13 @@ const QuizApp = () => {
             </button>
           </div>
           <div className="mb-4">
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div
                 className="bg-indigo-600 h-2 rounded-full"
                 style={{ width: `${((currentQuestionIndex + 1) / quiz.questions.length) * 100}%` }}
               ></div>
             </div>
-            <p className="text-right text-sm text-gray-500 mt-1">
+            <p className="text-right text-sm text-gray-500 dark:text-gray-400 mt-1">
               {currentQuestionIndex + 1} / {quiz.questions.length}
             </p>
           </div>

@@ -109,6 +109,27 @@ const useAuthStore = create((set) => ({
 
     // User information
     user: null,
+
+    // Dark mode
+    darkMode: localStorage.getItem('darkMode') === 'true',
+    toggleDarkMode: () => set((state) => {
+        const newValue = !state.darkMode;
+        localStorage.setItem('darkMode', String(newValue));
+        if (newValue) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        return { darkMode: newValue };
+    }),
+    initDarkMode: () => {
+        const stored = localStorage.getItem('darkMode') === 'true';
+        if (stored) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    },
 }));
 
 export default useAuthStore;

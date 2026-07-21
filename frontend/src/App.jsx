@@ -17,10 +17,12 @@ import DocumentMode from './pages/DocumentMode';
 
 const App = () => {
     const initFromStorage = useAuthStore(state => state.initFromStorage);
+    const initDarkMode = useAuthStore(state => state.initDarkMode);
 
     useEffect(() => {
         initFromStorage();
-    }, [initFromStorage]);
+        initDarkMode();
+    }, [initFromStorage, initDarkMode]);
     return (
         <Router>
             <Routes>

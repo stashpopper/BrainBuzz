@@ -211,24 +211,24 @@ const DocumentMode = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <Nav />
             <div className="max-w-4xl mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">Document Mode</h1>
-                <p className="text-gray-600 mb-8">Upload a PDF document to generate a quiz based on its content.</p>
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Document Mode</h1>
+                <p className="text-gray-600 dark:text-gray-400 mb-8">Upload a PDF document to generate a quiz based on its content.</p>
 
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6">
                         {error}
                         <button onClick={() => setError(null)} className="float-right font-bold">&times;</button>
                     </div>
                 )}
 
                 {/* Upload Section */}
-                <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">Upload Document</h2>
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-6">
+                    <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Upload Document</h2>
                     <div
-                        className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-500 transition-colors cursor-pointer"
+                        className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center hover:border-indigo-500 transition-colors cursor-pointer"
                         onClick={() => fileInputRef.current?.click()}
                     >
                         <input
@@ -241,8 +241,8 @@ const DocumentMode = () => {
                         <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                        <p className="mt-2 text-gray-600">Click to upload a PDF document</p>
-                        <p className="text-sm text-gray-400">Max 10MB</p>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">Click to upload a PDF document</p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500">Max 10MB</p>
                     </div>
 
                     {uploading && uploadProgress && (
@@ -265,8 +265,8 @@ const DocumentMode = () => {
 
                 {/* Documents List */}
                 {documents.length > 0 && (
-                    <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                        <h2 className="text-xl font-semibold text-gray-700 mb-4">Your Documents</h2>
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-6">
+                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Your Documents</h2>
                         <div className="space-y-3">
                             {documents
                                 .filter(doc => doc.status === 'ready')
@@ -275,15 +275,15 @@ const DocumentMode = () => {
                                     <div
                                         key={doc.documentId}
                                         className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedDocument?.documentId === doc.documentId
-                                            ? 'border-indigo-500 bg-indigo-50'
-                                            : 'border-gray-200 hover:border-indigo-300'
+                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
+                                            : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600'
                                             }`}
                                         onClick={() => setSelectedDocument(doc)}
                                     >
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <h3 className="font-medium text-gray-800">{doc.originalName}</h3>
-                                                <p className="text-sm text-gray-500">
+                                                <h3 className="font-medium text-gray-800 dark:text-gray-200">{doc.originalName}</h3>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
                                                     {doc.chunkCount} chunks • {doc.status}
                                                 </p>
                                             </div>
@@ -299,42 +299,42 @@ const DocumentMode = () => {
 
                 {/* Quiz Configuration */}
                 {selectedDocument && (
-                    <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                        <h2 className="text-xl font-semibold text-gray-700 mb-4">Quiz Configuration</h2>
-                        <p className="text-sm text-gray-500 mb-4">Selected: {selectedDocument.originalName}</p>
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-6">
+                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Quiz Configuration</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Selected: {selectedDocument.originalName}</p>
 
                         <div className="grid grid-cols-3 gap-4 mb-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Questions</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Questions</label>
                                 <input
                                     type="number"
                                     min="5"
                                     max="25"
                                     value={questionCount}
                                     onChange={(e) => setQuestionCount(parseInt(e.target.value))}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Time/Question (s)</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Time/Question (s)</label>
                                 <input
                                     type="number"
                                     min="10"
                                     max="120"
                                     value={timePerQuestion}
                                     onChange={(e) => setTimePerQuestion(parseInt(e.target.value))}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Options/Question</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Options/Question</label>
                                 <input
                                     type="number"
                                     min="2"
                                     max="6"
                                     value={optionsCount}
                                     onChange={(e) => setOptionsCount(parseInt(e.target.value))}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                                 />
                             </div>
                         </div>
@@ -360,12 +360,12 @@ const DocumentMode = () => {
 
                 {/* Generated Quiz */}
                 {generatedQuiz && (
-                    <div className="bg-white rounded-xl shadow-md p-6">
-                        <h2 className="text-xl font-semibold text-gray-700 mb-4">Quiz Ready!</h2>
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Quiz Ready!</h2>
                         <div className="mb-4">
-                            <p className="text-gray-600"><strong>Topics:</strong> {generatedQuiz.topics?.join(', ')}</p>
-                            <p className="text-gray-600"><strong>Questions:</strong> {generatedQuiz.questions?.length}</p>
-                            <p className="text-gray-600"><strong>Time per question:</strong> {generatedQuiz.timePerQuestion}s</p>
+                            <p className="text-gray-600 dark:text-gray-400"><strong>Topics:</strong> {generatedQuiz.topics?.join(', ')}</p>
+                            <p className="text-gray-600 dark:text-gray-400"><strong>Questions:</strong> {generatedQuiz.questions?.length}</p>
+                            <p className="text-gray-600 dark:text-gray-400"><strong>Time per question:</strong> {generatedQuiz.timePerQuestion}s</p>
                         </div>
                         <button
                             onClick={handleStartQuiz}
