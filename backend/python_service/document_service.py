@@ -16,6 +16,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain_mistralai import MistralAIEmbeddings
 from pymongo import MongoClient
+from pypdf.errors import PdfReadError
 
 load_dotenv()
 
@@ -145,6 +146,14 @@ def ingest_pdf(file_path_or_url: str, document_id: str) -> dict:
         resp = httpx.get(file_path_or_url, timeout=60, follow_redirects=True)
         resp.raise_for_status()
 
+        # Validate that the downloaded content looks like a PDF
+        content_header = resp.content[:5]
+        if content_header != b"%PDF-":
+            raise ValueError(
+                f"Downloaded file is not a valid PDF (header: {content_header!r}). "
+                "The URL may point to an HTML error page or non-PDF resource."
+            )
+
         suffix = ".pdf"
         tmp_fd, tmp_path = tempfile.mkstemp(suffix=suffix)
         try:
@@ -168,12 +177,31 @@ def ingest_pdf(file_path_or_url: str, document_id: str) -> dict:
 def _process_pdf_file(file_path: str, document_id: str) -> dict:
     """Internal: load, chunk, embed and store a local PDF file."""
     loader = PyPDFLoader(file_path)
-    pages = loader.load()
+
+    try:
+        pages = loader.load()
+    except PdfReadError as e:
+        raise ValueError(
+            f"PDF could not be read: {e}. "
+            "The file may be encrypted, password-protected, or corrupted."
+        )
+    except Exception as e:
+        raise ValueError(f"Failed to load PDF: {e}")
 
     if not pages:
         raise ValueError("PDF is empty or could not be read")
 
     page_count = len(pages)
+
+    # Filter out pages with no extractable text (scanned images, blank pages)
+    pages_with_text = [p for p in pages if p.page_content and p.page_content.strip()]
+    if not pages_with_text:
+        raise ValueError(
+            "No extractable text found in PDF. "
+            "The document may be scanned/image-only without an OCR text layer."
+        )
+
+    print(f"[ingest] {len(pages_with_text)}/{page_count} pages contain text")
 
     # Split into chunks
     splitter = RecursiveCharacterTextSplitter(
@@ -181,10 +209,13 @@ def _process_pdf_file(file_path: str, document_id: str) -> dict:
         chunk_overlap=CHUNK_OVERLAP,
         separators=["\n\n", "\n", ". ", " ", ""],
     )
-    chunks = splitter.split_documents(pages)
+    chunks = splitter.split_documents(pages_with_text)
+
+    # Filter out empty/whitespace-only chunks that would break embedding
+    chunks = [c for c in chunks if c.page_content and c.page_content.strip()]
 
     if not chunks:
-        raise ValueError("No text content could be extracted from PDF")
+        raise ValueError("No text content could be extracted from PDF after chunking")
 
     # Prepare documents for MongoDB with required fields matching Mongoose schema
     collection = _get_collection()

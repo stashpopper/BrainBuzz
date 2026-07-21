@@ -5,6 +5,7 @@ Uses LangChain with Mistral LLM and structured Pydantic output.
 
 import os
 import random
+import time
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -77,8 +78,13 @@ def extract_topics(document_id: str) -> list[dict]:
         step = total // 8
         sampled = [chunks[i * step] for i in range(8) if i * step < total]
 
+    # Filter out chunks with no meaningful text
+    valid_sampled = [c for c in sampled if c.get("text") and len(c["text"].strip()) > 20]
+    if not valid_sampled:
+        raise ValueError("Document chunks contain no meaningful text for topic extraction")
+
     excerpts_text = "\n\n---\n\n".join(
-        chunk["text"][:600] for chunk in sampled
+        chunk["text"][:600] for chunk in valid_sampled
     )
 
     llm = _get_llm(temperature=0.0)
@@ -95,8 +101,19 @@ Each topic must be grounded in the excerpts above — do not invent topics.
 Topics should be specific enough to generate meaningful quiz questions.
 """
 
-    result: TopicList = structured_llm.invoke(prompt)
-    return [t.model_dump() for t in result.topics]
+    max_retries = 3
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            result: TopicList = structured_llm.invoke(prompt)
+            return [t.model_dump() for t in result.topics]
+        except Exception as e:
+            last_error = str(e)
+            print(f"[topics] Structured output parse failed (attempt {attempt+1}): {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+
+    raise RuntimeError(f"Topic extraction failed after {max_retries} attempts: {last_error}")
 
 
 # ── RAG-based question generation ─────────────────────────────────────────────
@@ -122,7 +139,14 @@ def generate_questions_for_topic(
     search_query = f"{topic_title}: {topic_desc}"
     relevant_chunks = search_similar_chunks(search_query, document_id, k=5)
 
+    # Filter out chunks with empty or very short text
+    relevant_chunks = [
+        c for c in relevant_chunks
+        if c.get("text") and len(c["text"].strip()) > 30
+    ]
+
     if not relevant_chunks:
+        print(f"[quiz] No valid chunks found for topic '{topic_title}', skipping")
         return []
 
     context = "\n\n---\n\n".join(chunk["text"] for chunk in relevant_chunks)
@@ -150,8 +174,27 @@ REQUIREMENTS:
 7. Set the 'topic' field to "{topic_title}" for every question
 """
 
-    result: QuestionSet = structured_llm.invoke(prompt)
-    return [q.model_dump() for q in result.questions]
+    max_retries = 3
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            result: QuestionSet = structured_llm.invoke(prompt)
+            # Validate that correct_answer is actually in options
+            valid_questions = []
+            for q in result.questions:
+                if q.correct_answer in q.options:
+                    valid_questions.append(q)
+                else:
+                    print(f"[quiz] Dropping question with invalid correct_answer: {q.question[:50]}...")
+            return [q.model_dump() for q in valid_questions]
+        except Exception as e:
+            last_error = str(e)
+            print(f"[quiz] Structured output parse failed for '{topic_title}' (attempt {attempt+1}): {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+
+    print(f"[quiz] Question generation failed for topic '{topic_title}': {last_error}")
+    return []
 
 
 def generate_quiz(
