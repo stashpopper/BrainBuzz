@@ -13,6 +13,7 @@ const QuizRoom = () => {
   const apiUrl = useAuthStore((state) => state.apiUrl);
   const user = useAuthStore((state) => state.user);
   const isInitialized = useAuthStore((state) => state.isInitialized);
+  const ensureGuestSession = useAuthStore((state) => state.ensureGuestSession);
   
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,13 +46,21 @@ const QuizRoom = () => {
     // Wait for auth initialization before checking token
     if (!isInitialized) return;
     
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
     const initializeRoom = async () => {
-      await fetchRoomData();
+      // Anonymous visitors get a guest session automatically — no login needed
+      let authToken = token;
+      if (!authToken) {
+        try {
+          authToken = await ensureGuestSession();
+        } catch (err) {
+          console.error('Guest session failed:', err);
+          setError('Could not start a session. Please refresh the page.');
+          setLoading(false);
+          return;
+        }
+      }
+
+      await fetchRoomData(authToken);
       setupSocketConnection();
     };
 
@@ -62,14 +71,14 @@ const QuizRoom = () => {
       socketService.removeAllListeners();
     };
   }, [roomCode, token, isInitialized]);
-  const fetchRoomData = async () => {
+  const fetchRoomData = async (authTokenOverride) => {
     try {
       setLoading(true);
       setError(''); // Clear previous errors
       
       const response = await axios.get(`${apiUrl}/quiz-room/${roomCode}`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${authTokenOverride || token}`
         }
       });
         const roomData = response.data;
@@ -104,11 +113,7 @@ const QuizRoom = () => {
       
       // Handle token expiration
       if (error.response?.status === 401 || error.response?.status === 403) {
-        setError('Session expired. Please login again.');
-        // Don't redirect immediately, show error first
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+        setError('Session expired. Please refresh the page.');
       } else {
         setError(error.response?.data?.error || 'Failed to load room. Retrying...');
         // Retry after 3 seconds
@@ -474,16 +479,28 @@ const QuizRoom = () => {
                   </div>
                 </div>
 
-                {/* Categories */}
+                {/* Categories or Document source */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">Categories</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {room.categories.map((category, index) => (
-                      <span key={index} className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 rounded-full text-sm">
-                        {category}
-                      </span>
-                    ))}
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                    {room.quizSource === 'document' ? 'Quiz Source' : 'Categories'}
+                  </h3>
+                  {room.quizSource === 'document' ? (
+                    <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                      <span className="text-2xl">📄</span>
+                      <div>
+                        <div className="font-medium text-indigo-800 dark:text-indigo-300 text-sm">{room.documentName}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Questions will be generated from this document</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {(room.categories || []).map((category, index) => (
+                        <span key={index} className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 rounded-full text-sm">
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>                {/* Quiz Generation Overlay */}
                 {isGeneratingQuiz && (
                   <div className="mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">

@@ -47,7 +47,7 @@ class QuestionSet(BaseModel):
 
 def _get_llm(temperature: float = 0.0) -> ChatMistralAI:
     return ChatMistralAI(
-        model="mistral-large-latest",
+        model="labs-leanstral-1-5-1",
         api_key=MISTRAL_API_KEY,
         temperature=temperature,
     )

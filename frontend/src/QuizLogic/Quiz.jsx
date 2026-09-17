@@ -55,7 +55,7 @@ const QuizApp = () => {
       const response = await axios.post(
         API_URL,
         {
-          model: "mistral-large-2411",
+          model: "labs-leanstral-1-5-1",
           messages: [{ role: "user", content: prompt }],
           temperature: 0.7,
         },

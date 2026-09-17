@@ -24,3 +24,13 @@ dist-ssr
 *.sw?
 .env
 */.env
+
+logs/
+backend/.env
+backend/python_service/.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc

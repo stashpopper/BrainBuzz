@@ -1,9 +1,12 @@
 import { create } from 'zustand';
 
 // Use environment variable for API URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5010';
 
-const useAuthStore = create((set) => ({
+// Singleton promise so parallel calls share one guest session
+let guestSessionPromise = null;
+
+const useAuthStore = create((set, get) => ({
     // API base URL for all requests
     apiUrl: API_URL,
     
@@ -56,6 +59,26 @@ const useAuthStore = create((set) => ({
 
     inviteLink: '',
     setInviteLink: (link) => set({ inviteLink: link }),
+    // Guest session: gives anonymous visitors a real token so rooms + document
+    // mode work without login. No-op when already logged in.
+    ensureGuestSession: async () => {
+        const { token, apiUrl, setToken, setUserData } = get();
+        if (token) return token;
+        if (!guestSessionPromise) {
+            guestSessionPromise = fetch(`${apiUrl}/guest`, { method: 'POST' })
+                .then(async (res) => {
+                    if (!res.ok) throw new Error('Failed to create guest session');
+                    return res.json();
+                })
+                .then((data) => {
+                    setToken(data.token);
+                    setUserData({ name: data.name, id: data.id, email: data.email, isGuest: true });
+                    return data.token;
+                })
+                .finally(() => { guestSessionPromise = null; });
+        }
+        return guestSessionPromise;
+    },
     // Step management
     stepsItems: ["Category", "Difficulty", "Customise", "Review"],
     currentStep: 1,

@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const QuizRoom = require('../models/quizRoom');
+const Document = require('../models/document');
 const { authenticateToken } = require('../middleware/auth');
 
 // Configuration
 const API_KEY = "w9MCe67fIaMN4PT4koycxNt6ae50XVXG";
 const API_URL = "https://api.mistral.ai/v1/chat/completions";
+const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://127.0.0.1:5002';
 
 // User model will be passed in during initialization
 let User;
@@ -61,11 +63,37 @@ function getFallbackQuestions(difficulty = 'medium', count = 5) {
 // Create quiz room
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const { roomName, categories, difficulty, questionCount, optionsCount, timePerQuestion, maxParticipants } = req.body;
+        const { roomName, categories, difficulty, questionCount, optionsCount, timePerQuestion, maxParticipants, quizSource, documentId, documentName } = req.body;
         const user = await User.findById(req.user.id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Validate quiz source
+        const source = quizSource === 'document' ? 'document' : 'categories';
+        let docName = null;
+        let docId = null;
+
+        if (source === 'document') {
+            if (!documentId) {
+                return res.status(400).json({ error: 'Document ID is required for document-based rooms' });
+            }
+
+            const document = await Document.findOne({ documentId, userId: req.user.id });
+            if (!document) {
+                return res.status(404).json({ error: 'Document not found' });
+            }
+            if (document.status !== 'ready') {
+                return res.status(400).json({ error: `Document is not ready yet. Current status: ${document.status}` });
+            }
+
+            docId = document.documentId;
+            docName = documentName || document.originalName;
+        } else {
+            if (!categories || categories.length === 0) {
+                return res.status(400).json({ error: 'Please select at least one category' });
+            }
         }
 
         // Generate unique room code
@@ -82,7 +110,10 @@ router.post('/', authenticateToken, async (req, res) => {
             roomName,
             createdBy: req.user.id,
             creatorName: user.name,
-            categories,
+            quizSource: source,
+            documentId: docId,
+            documentName: docName,
+            categories: source === 'document' ? [] : categories,
             difficulty: difficulty || 'medium',
             questionCount: questionCount || 10,
             optionsCount: optionsCount || 4,
@@ -113,6 +144,8 @@ router.post('/', authenticateToken, async (req, res) => {
             room: {
                 roomCode: quizRoom.roomCode,
                 roomName: quizRoom.roomName,
+                quizSource: quizRoom.quizSource,
+                documentName: quizRoom.documentName,
                 categories: quizRoom.categories,
                 difficulty: quizRoom.difficulty,
                 questionCount: quizRoom.questionCount,
@@ -192,6 +225,8 @@ router.get('/:roomCode', authenticateToken, async (req, res) => {
             roomName: room.roomName,
             creatorName: room.creatorName,
             createdBy: room.createdBy._id,
+            quizSource: room.quizSource,
+            documentName: room.documentName,
             categories: room.categories,
             difficulty: room.difficulty,
             questionCount: room.questionCount,
@@ -243,6 +278,62 @@ router.post('/:roomCode/start', authenticateToken, async (req, res) => {
         if (!room.quiz.isGenerated) {
             let questions;
 
+            // ── Document-based room: RAG generation via Python service ──
+            if (room.quizSource === 'document') {
+                try {
+                    if (!room.documentId) {
+                        throw new Error('Room has no document attached');
+                    }
+
+                    const document = await Document.findOne({ documentId: room.documentId });
+                    if (!document || document.status !== 'ready') {
+                        throw new Error('Document is not available for quiz generation');
+                    }
+
+                    if (io) {
+                        io.to(roomCode).emit('quizGenerating', {
+                            message: `Generating quiz from "${room.documentName}" with AI...`
+                        });
+                    }
+
+                    const pyResponse = await axios.post(`${PYTHON_SERVICE_URL}/generate-quiz`, {
+                        document_id: room.documentId,
+                        question_count: Math.min(Math.max(room.questionCount, 5), 25),
+                        options_count: room.optionsCount
+                    }, {
+                        timeout: 300000 // 5 minute timeout for large documents
+                    });
+
+                    const generated = pyResponse.data;
+                    if (!generated.questions || generated.questions.length === 0) {
+                        throw new Error('No questions were generated from the document');
+                    }
+
+                    questions = generated.questions.map(q => ({
+                        question: q.question,
+                        options: q.options,
+                        correct_answer: q.correct_answer
+                    }));
+
+                    console.log(`Document quiz generated (${questions.length} questions) for room ${roomCode}`);
+                    if (io) {
+                        io.to(roomCode).emit('quizGenerating', {
+                            message: 'Document quiz ready! Starting quiz...'
+                        });
+                    }
+                } catch (error) {
+                    console.error(`Document quiz generation failed for room ${roomCode}:`, error.response?.data || error.message);
+                    if (io) {
+                        io.to(roomCode).emit('quizError', {
+                            message: 'Failed to generate quiz from the document. The room is still open — the creator can try again.'
+                        });
+                    }
+                    return res.status(500).json({
+                        error: 'Failed to generate quiz from the document. Please try again.'
+                    });
+                }
+            } else {
+
             try {
                 const categoryString = room.categories.join(", ");
                 const prompt = `
@@ -263,7 +354,7 @@ router.post('/:roomCode/start', authenticateToken, async (req, res) => {
                 const response = await axios.post(
                     API_URL,
                     {
-                        model: "mistral-large-2411",
+                        model: "labs-leanstral-1-5-1",
                         messages: [{ role: "user", content: prompt }],
                         temperature: 0.7,
                     },
@@ -305,6 +396,7 @@ router.post('/:roomCode/start', authenticateToken, async (req, res) => {
                 }
                 questions = getFallbackQuestions(room.difficulty, room.questionCount);
             }
+            } // end categories branch
 
             room.quiz.questions = questions;
             room.quiz.isGenerated = true;

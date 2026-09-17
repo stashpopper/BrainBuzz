@@ -58,9 +58,23 @@ const quizRoomSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  categories: [{
+  // Quiz source: 'categories' = AI quiz from selected categories,
+  // 'document' = RAG quiz generated from an uploaded PDF
+  quizSource: {
     type: String,
-    required: true
+    enum: ['categories', 'document'],
+    default: 'categories'
+  },
+  documentId: {
+    type: String,
+    default: null
+  },
+  documentName: {
+    type: String,
+    default: null
+  },
+  categories: [{
+    type: String
   }],
   difficulty: {
     type: String,

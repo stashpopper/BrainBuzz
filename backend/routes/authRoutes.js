@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const router = express.Router();
 
 // User model will be passed in during initialization
@@ -63,6 +64,28 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: "Server error during login" });
+    }
+});
+
+// Guest session — lets anyone create/join quiz rooms and use document mode
+// without signing up. Creates a real user record so every existing
+// authenticated endpoint (upload, rooms, scores) works unchanged.
+router.post('/guest', async (req, res) => {
+    try {
+        const randomSuffix = () => Math.random().toString(36).substring(2, 8);
+        const name = `Guest${randomSuffix()}`;
+        const email = `guest-${crypto.randomUUID()}@guest.local`;
+        const password = crypto.randomUUID();
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ name, email, password: hashedPassword });
+        await user.save();
+
+        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "24h" });
+        res.json({ token, name: user.name, id: user._id, email: user.email, isGuest: true });
+    } catch (error) {
+        console.error('Guest session error:', error);
+        res.status(500).json({ message: 'Failed to create guest session' });
     }
 });
 

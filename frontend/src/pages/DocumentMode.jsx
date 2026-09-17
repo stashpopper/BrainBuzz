@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 
 const DocumentMode = () => {
     const navigate = useNavigate();
-    const { token, isLoggedIn, isInitialized, apiUrl } = useAuthStore();
+    const { token, isLoggedIn, isInitialized, apiUrl, ensureGuestSession } = useAuthStore();
     const fileInputRef = useRef(null);
     const socketRef = useRef(null);
 
@@ -25,12 +25,15 @@ const DocumentMode = () => {
     const [timePerQuestion, setTimePerQuestion] = useState(30);
     const [optionsCount, setOptionsCount] = useState(4);
 
-    // Redirect if not logged in (only after store is initialized)
+    // Anonymous visitors get a guest session automatically — no login needed
     useEffect(() => {
-        if (isInitialized && !isLoggedIn) {
-            navigate('/login');
+        if (isInitialized && !isLoggedIn && !token) {
+            ensureGuestSession().catch((err) => {
+                console.error('Guest session failed:', err);
+                setError('Could not start a session. Please refresh the page.');
+            });
         }
-    }, [isInitialized, isLoggedIn, navigate]);
+    }, [isInitialized, isLoggedIn, token]);
 
     // Setup Socket.IO connection
     useEffect(() => {

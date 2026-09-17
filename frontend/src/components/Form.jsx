@@ -62,7 +62,11 @@ function Form() {
             });
             if (response.data.token) {
                 setToken(response.data.token);
-                setUserData({ name });
+                setUserData({ 
+                    name: response.data.name, 
+                    id: response.data.id, 
+                    email: response.data.email 
+                });
                 navigate('/');
             }
         }

@@ -8,24 +8,23 @@ const QuizRooms = () => {
   const navigate = useNavigate();
   const token = useAuthStore((state) => state.token);
   const apiUrl = useAuthStore((state) => state.apiUrl);
+  const ensureGuestSession = useAuthStore((state) => state.ensureGuestSession);
   
   const [joinCode, setJoinCode] = useState('');
   const [joinLoading, setJoinLoading] = useState(false);
   const [error, setError] = useState('');
 
   const joinRoom = async (roomCode) => {
-    if (!token) {
-      setError('Please log in to join a room');
-      return;
-    }
-
     setJoinLoading(true);
     setError('');
 
     try {
+      // Guests can join without logging in
+      const authToken = token || await ensureGuestSession();
+
       await axios.post(`${apiUrl}/quiz-room/${roomCode}/join`, {}, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${authToken}`
         }
       });
       
