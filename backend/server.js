@@ -107,6 +107,11 @@ app.get('/', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'BrainBuzz API is running' });
 });
 
+// Keep-alive route (explicit, same pattern as AI Interviewer)
+app.get('/keep-alive', (req, res) => {
+  res.json({ status: 'ok', message: 'BrainBuzz keep-alive', timestamp: Date.now() });
+});
+
 // Initialize Socket.IO handlers
 initializeSocketHandlers(io);
 
